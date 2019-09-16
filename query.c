@@ -52,7 +52,7 @@ Signal(sema_set, 1);
 int found = -1;
 for(int k = 0; k < MAX_STUDENTS; k++){
 	if(strcmp(record[k].studentID, queried_id) == 0){ 
-	printf("\nName: %s \nPhone Number: %s\nStudent ID: %s\nAddress: %s\n", record[k].fName,record[k].telNumber, record[k].studentID, record[k].address);
+	printf("\nName: %s \nPhone Number: %s\nStudent ID: %s\nAddress: %s\n", record[k].name,record[k].telNumber, record[k].studentID, record[k].address);
  printf("Last modified by: %s\n \n ", record[k].whoModified);
  found = 0;
 }

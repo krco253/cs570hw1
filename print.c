@@ -47,11 +47,11 @@ Signal(sema_set, 1);
 
 //for (int k = 0; k < MAX_STUDENTS; k++){
 int k = 0;
-while(strcmp(record[k].fName,"")){ 
+while(strcmp(record[k].name,"")){ 
   /* printf("the value of sema_set=%d\n", sema_set);
    Wait(sema_set,-1); */
    printf("\nName: %s \nPhone Number: %s\nStudent ID: %s\nAddress: %s\n",
-	     record[k].fName,record[k].telNumber, record[k].studentID, record[k].address);
+	     record[k].name,record[k].telNumber, record[k].studentID, record[k].address);
  printf("Last modified by: %s\n \n ", record[k].whoModified);
  k++;
   //Signal(sema_set,-1);

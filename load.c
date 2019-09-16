@@ -80,7 +80,7 @@ for(int k = 0; k < MAX_STUDENTS; k++){
      if (getline(&line, &len, fp1) != -1) {
 /* LOAD SHARED MEMORY SEGMENT WITH DATA FROM THE FILE */
   line = removeNewline(line);  
-  strcpy(infoptr->fName, line);
+  strcpy(infoptr->name, line);
   getline(&line, &len, fp1);
 //  int length = strlen(line);
 //  char last_char = line[length -1];
