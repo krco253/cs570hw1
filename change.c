@@ -23,17 +23,12 @@ return string;
 }
 
 
-main(int argc, char* argv[])
+main()
 {
   int i,recordsid, readid;
   struct StudentInfo *record;
   int * read_count;
   int sema_set;
-//  if (argc == 0){
-//    fprintf(stderr, "usage: ./change <u");
-//    exit(3);
- // } 
-
 /* get the id of the shared memory segment with key "KEY" */
 /* note that this is the segment where the data is stored */
   recordsid = shmget(KEY,SEGSIZE * MAX_STUDENTS, 0);
@@ -80,7 +75,10 @@ main(int argc, char* argv[])
  printf("(a)dd student, (u)pdate student, or (d)elete student?\n");
  char option[10];
  fgets(option, 10, stdin);
+ /*WAIT*/
  Wait(sema_set, 0);
+
+ /*UPDATE, DELETE, ADD*/
  switch(option[0]){
 	case 'a': //ADD
 		printf("Please enter the student's ID to add: ");
@@ -105,6 +103,7 @@ main(int argc, char* argv[])
 			fgets(new_address, 64, stdin);
 			strcpy(new_address,removeNewline(new_address));
 			strcpy(infopr->address, new_address);
+			strcpy(new_student_id, removeNewline(new_student_id));
 			strcpy(infopr->studentID, new_student_id);
 		 	strcpy(infopr->whoModified, (getpwuid(getuid()))->pw_name);
 			record[k] = *infopr; //save the info into shared memory
@@ -205,15 +204,9 @@ main(int argc, char* argv[])
 		printf("Please choose a valid option.\n");
  }
  }
-
-/*  Wait(sema_set,1);
-  printf("the value of sema_set=%d\n", sema_set); 
-  strcpy(infoptr->name,argv[1]);
-  strcpy(infoptr->lName, argv[2]);
+/*SLEEP*/
   sleep(10);
-  strcpy(infoptr->telNumber, argv[3]);
-  strcpy(infoptr->whoModified, (getpwuid(getuid()))->pw_name);
-  sleep(10);*/
+  /*SIGNAL*/
   Signal(sema_set,0); 
   exit(0);
 

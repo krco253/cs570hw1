@@ -48,13 +48,10 @@ Signal(sema_set, 1);
 //for (int k = 0; k < MAX_STUDENTS; k++){
 int k = 0;
 while(strcmp(record[k].name,"")){ 
-  /* printf("the value of sema_set=%d\n", sema_set);
-   Wait(sema_set,-1); */
    printf("\nName: %s \nPhone Number: %s\nStudent ID: %s\nAddress: %s\n",
 	     record[k].name,record[k].telNumber, record[k].studentID, record[k].address);
  printf("Last modified by: %s\n \n ", record[k].whoModified);
  k++;
-  //Signal(sema_set,-1);
 }
 
   Wait(sema_set, 1);
@@ -65,8 +62,5 @@ while(strcmp(record[k].name,"")){
   Signal(sema_set, 1);
   shmdt(record);
   shmdt(read_count);
-  shmctl(recordsid, IPC_RMID,(struct shmid_ds *)0); /* destroy the shared memory segment*/
-  shmctl(readid, IPC_RMID,(struct shmid_ds *)0); /* destroy the shared memory segment*/
-   semctl(sema_set,0,IPC_RMID); /*Remove the semaphore set */
 return 0;
 }

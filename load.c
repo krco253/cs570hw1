@@ -1,5 +1,5 @@
 
- /* File create.c */
+ /* File load.c */
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -11,6 +11,12 @@
 #include <sys/sem.h>
 #include "header.h"
 
+/*------------------------*/
+/*|Function: removeNewline|*/
+/*----------------------- */
+/*purpose: removes trailing
+ * newline characters from fgets*/
+
 char * removeNewline(char * string){
   int length = strlen(string);
   char last_char = string[length -1];
@@ -21,6 +27,9 @@ char * removeNewline(char * string){
 return string; 
 }
 
+/*------------------------*/
+/*| Function: main       |*/
+/*------------------------*/
 main()
 {
   int i,recordsid, readid;
@@ -32,6 +41,18 @@ main()
   size_t len = 0;
   struct StudentInfo *  records;
   
+/*GET FILE PATH*/
+printf("Enter path of file: ");
+char filepath[200];
+fgets(filepath, 200, stdin);
+strcpy(filepath,removeNewline(filepath));
+fp1 = fopen(filepath, "r");
+if (fp1 == NULL) {   
+printf("Error! Could not read file\n"); 
+   exit(-1);  
+}
+
+
 /*CREATE SHARED MEMORY TO STORE STUDENT RECORDS*/
   recordsid = shmget(KEY, SEGSIZE * MAX_STUDENTS,IPC_CREAT|0666);/* get shared memory to store data*/
   if (recordsid <0){
@@ -73,8 +94,6 @@ Wait(sema_set, 0);
 /*INITIALIZE READ_COUNT*/
 *read_count = 0;
 
-fp1 = fopen("./Sample.txt", "r");
-
 for(int k = 0; k < MAX_STUDENTS; k++){
   struct StudentInfo *infoptr = (struct StudentInfo *) malloc(sizeof(struct StudentInfo));
      if (getline(&line, &len, fp1) != -1) {
@@ -82,12 +101,6 @@ for(int k = 0; k < MAX_STUDENTS; k++){
   line = removeNewline(line);  
   strcpy(infoptr->name, line);
   getline(&line, &len, fp1);
-//  int length = strlen(line);
-//  char last_char = line[length -1];
-//  if(last_char == '\n'){
-//  char *pos = line + strlen(line) - 1;
-//  *pos = '\0';
-//  }
   line = removeNewline(line);  
   strcpy(infoptr->studentID, line);
   getline(&line, &len, fp1);
@@ -103,7 +116,8 @@ for(int k = 0; k < MAX_STUDENTS; k++){
 	break;
  }
 }
-
+/*SLEEP*/
+sleep(10);
 shmdt(records); /* detach the shared memory segment */
 shmdt(read_count);
 fclose(fp1);

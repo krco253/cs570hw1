@@ -41,15 +41,18 @@ record = (struct StudentInfo *)shmat(recordsid, NULL,0);/*attach the shared memo
 char queried_id[10];
 printf("Enter requested student's ID: ");
 scanf("%s", queried_id);
-
+/*WAIT*/
 Wait(sema_set,1);
+/*INCREMENT READ_COUNT*/
 *read_count++; 
+/*WAIT IF NECESSARY*/
 if(*read_count == 1){
 Wait(sema_set,0);
 Signal(sema_set, 1);
 }
 
-int found = -1;
+int found = -1;//indicates whether the query was found
+/*SEARCH SHARED MEMORY FOR RECORD*/
 for(int k = 0; k < MAX_STUDENTS; k++){
 	if(strcmp(record[k].studentID, queried_id) == 0){ 
 	printf("\nName: %s \nPhone Number: %s\nStudent ID: %s\nAddress: %s\n", record[k].name,record[k].telNumber, record[k].studentID, record[k].address);
@@ -63,17 +66,16 @@ if (found == -1){
 
 printf("Record not found.\n");
 }
-
+/*WAIT*/
   Wait(sema_set, 1);
+ /*DECREMENT READ COUNT*/
   *read_count--;
   if(*read_count == 0){
 	Signal(sema_set, 0);
   }
   Signal(sema_set, 1);
+  //DEATTACH MEMORY
   shmdt(record);
   shmdt(read_count);
-  shmctl(recordsid, IPC_RMID,(struct shmid_ds *)0); /* destroy the shared memory segment*/
-  shmctl(readid, IPC_RMID,(struct shmid_ds *)0); /* destroy the shared memory segment*/
-   semctl(sema_set,0,IPC_RMID); /*Remove the semaphore set */
 return 0;
 }
