@@ -1,4 +1,8 @@
-/*File change.c */
+/*------------------------
+ * File: change.c 
+ * Purpose: allow users to add, update, and remove
+ * entries from the database
+ * -----------------------*/
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -12,6 +16,12 @@
 #include <pwd.h>
 #include "header.h"
 
+/*------------------------*/
+/*|Function: removeNewline|*/
+/*----------------------- */
+/*purpose: removes trailing
+ * newline characters from fgets*/
+
 char * removeNewline(char * string){
   int length = strlen(string);
   char last_char = string[length -1];
@@ -22,7 +32,9 @@ char * removeNewline(char * string){
 return string; 
 }
 
-
+/*------------------------*/
+/*| Function: main       |*/
+/*------------------------*/
 main()
 {
   int i,recordsid, readid;
@@ -79,14 +91,14 @@ main()
  Wait(sema_set, 0);
 
  /*UPDATE, DELETE, ADD*/
- switch(option[0]){
+ switch(option[0]){//determine the appropriate action to perform and perform it
 	case 'a': //ADD
-		printf("Please enter the student's ID to add: ");
+		printf("Please enter the student's ID to add: "); //get student ID
 		char new_student_id[10];
 		fgets(new_student_id, 10, stdin);
   		struct StudentInfo *infopr = (struct StudentInfo *) malloc(sizeof(struct StudentInfo));
- 		for(int k = 0; k < MAX_STUDENTS; k++){
-		if(strcmp(record[k].studentID, "") == 0){
+ 		for(int k = 0; k < MAX_STUDENTS; k++){ //look for the beginning of shared memory that has not been allocated
+		if(strcmp(record[k].studentID, "") == 0){ //if the studentID is empty, this is an empty record we can store in
 		       	//get new info
 			printf("Name? ");
 			char new_student_name[40];
@@ -101,30 +113,29 @@ main()
 			printf("Address? "); 
 			char new_address[64];
 			fgets(new_address, 64, stdin);
-			strcpy(new_address,removeNewline(new_address));
+			strcpy(new_address,removeNewline(new_address));//remove trailing newline
 			strcpy(infopr->address, new_address);
 			strcpy(new_student_id, removeNewline(new_student_id));
 			strcpy(infopr->studentID, new_student_id);
-		 	strcpy(infopr->whoModified, (getpwuid(getuid()))->pw_name);
+		 	strcpy(infopr->whoModified, (getpwuid(getuid()))->pw_name);//update modified by
 			record[k] = *infopr; //save the info into shared memory
 			free(infopr);
 
 			printf("\nNew Student Added\nName: %s \nPhone Number: %s\nStudent ID: %s\nAddress: %s\n", record[k].name,record[k].telNumber, record[k].studentID, record[k].address);
- 			printf("Last modified by: %s\n \n ", record[k].whoModified);
+ 			printf("Last modified by: %s\n \n ", record[k].whoModified);//print new record
 			
 			break;
 		}
  
 		}
-
-
-		loop = -1;		
+		loop = -1;//break out of outer input validation loop		
 		break;
 	case 'u': //UPDATE
 		/*GET THE STUDENT ID*/
 		printf("Please enter the student's ID: ");
 		char s_id[10];
 		fgets(s_id, 10, stdin);
+		strcpy(s_id,removeNewline(s_id));
 		int found = -1;
   		struct StudentInfo *infoptr = (struct StudentInfo *) malloc(sizeof(struct StudentInfo));
  		for(int k = 0; k < MAX_STUDENTS; k++){ //find the student
@@ -158,7 +169,6 @@ main()
 		}
  
 		}
-
 		if (found == -1){
 		printf("Record not found.\n");
 		}
@@ -169,14 +179,14 @@ main()
 		printf("Please enter the student's ID to delete: ");
 		char student_id[10];
 		fgets(student_id, 10, stdin);
-		//printf("%s", student_id);
-		int found_delete = -1;
+		strcpy(student_id,removeNewline(student_id));
+		int found_delete = -1;//flag to track if record was found
   		struct StudentInfo *infptr = (struct StudentInfo *) malloc(sizeof(struct StudentInfo));
  		for(int k = 0; k < MAX_STUDENTS; k++){
-		if(strcmp(record[k].studentID, student_id) == 0){ 
+		if(strcmp(record[k].studentID, student_id) == 0){ //record found
 			printf("\nName: %s \nPhone Number: %s\nStudent ID: %s\nAddress: %s\n", record[k].name,record[k].telNumber, record[k].studentID, record[k].address);
  			printf("Last modified by: %s\n \n ", record[k].whoModified);
-			while(strcmp(record[k].name, "") != 0){
+			while(strcmp(record[k].name, "") != 0){//move all records 'back' a spot in memory
 			strcpy(infptr->name,record[k+1].name);
 			strcpy(infptr->telNumber, record[k+1].telNumber);
 			strcpy(infptr->address, record[k+1].address);

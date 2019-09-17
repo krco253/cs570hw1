@@ -1,3 +1,9 @@
+/* ------------------------
+ *File: print.c
+ *Purpose: print contents of shared memory
+ *--------------------------
+ * */
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>

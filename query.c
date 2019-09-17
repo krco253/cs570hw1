@@ -1,3 +1,9 @@
+/* ---------------------------------------------
+ * File: query.c 
+ * Purpose: allow user to query shared memory
+ *---------------------------------------------
+ * */
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>

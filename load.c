@@ -1,5 +1,9 @@
 
- /* File load.c */
+ /* -------------------------------
+  * File: load.c 
+  * Purpose: loads file into shared memory
+  *--------------------------------
+  * */
 
 #include <stdlib.h>
 #include <unistd.h>
